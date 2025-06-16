@@ -1,7 +1,8 @@
 import { Transacao } from "./Transacao.js";
 import { TipoTransacao } from "./TipoTransacao.js";
+import { GrupoTransacao } from "./GrupoTransacao.js";
 
-let saldo: number = 3000;
+let saldo: number = JSON.parse(localStorage.getItem("saldo") || '0');
 
 const transacoes: Transacao[] = JSON.parse(
     localStorage.getItem('transacoes') || '[]', 
@@ -26,6 +27,7 @@ function debitar (valor: number): void {
     }
 
     saldo -= valor;
+    localStorage.setItem("saldo", saldo.toString());
 
 }
 
@@ -33,7 +35,9 @@ function depositar (valor: number): void {
     if (valor <= 0) {
         throw new Error ("O valor a ser depositado deve ser maior que zero!");
     }
+
     saldo += valor;
+    localStorage.setItem("saldo", saldo.toString());
 }
 
 const Conta = {
@@ -43,6 +47,23 @@ const Conta = {
 
     getDataAcesso() {
         return new Date();
+    },
+
+    getGruposTransacao(): GrupoTransacao[] {
+        const gruposTransacoes: GrupoTransacao[] = [];
+        const listaTransacoes: Transacao[] = structuredClone(transacoes);
+        const transacoesOrdenadas: Transacao[] = listaTransacoes.sort((t1, t2) => t2.data.getTime() - t1.data.getTime());
+        let labelAtualGrupoTransacao: string = "";
+
+        for (let transacao of transacoesOrdenadas) {
+            let labelGrupoTransacao: string = transacao.data.toLocaleDateString('pt-br', { month: 'long' , year: 'numeric'});
+            if (labelAtualGrupoTransacao != labelGrupoTransacao) {
+                labelAtualGrupoTransacao = labelGrupoTransacao;
+                gruposTransacoes.push({
+                    
+                })
+            }
+        }
     },
 
     registrarTransacao(novaTransacao: Transacao): void {
