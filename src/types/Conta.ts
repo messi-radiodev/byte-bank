@@ -60,10 +60,19 @@ const Conta = {
             if (labelAtualGrupoTransacao != labelGrupoTransacao) {
                 labelAtualGrupoTransacao = labelGrupoTransacao;
                 gruposTransacoes.push({
-                    
+                    label: labelGrupoTransacao,
+                    transacoes: []
                 })
             }
+            
+            const ultimoGrupo = gruposTransacoes.at(-1);
+            
+            if (ultimoGrupo) {
+                ultimoGrupo.transacoes.push(transacao);
+            }
         }
+
+        return gruposTransacoes;
     },
 
     registrarTransacao(novaTransacao: Transacao): void {
@@ -76,7 +85,7 @@ const Conta = {
         }
 
         transacoes.push(novaTransacao);
-        console.log (transacoes);
+        console.log (this.getGruposTransacao());
         localStorage.setItem('transacoes', JSON.stringify(transacoes));
     }
 
